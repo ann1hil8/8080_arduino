@@ -135,12 +135,14 @@ static inline uint16_t i8080_get_hl(i8080* const c) {
 
 // pushes a value into the stack and updates the stack pointer
 static inline void i8080_push_stack(i8080* const c, uint16_t val) {
+  syncSignal(STACK_WRITE);
   c->sp -= 2;
   i8080_ww(c, c->sp, val);
 }
 
 // pops a value from the stack and updates the stack pointer
 static inline uint16_t i8080_pop_stack(i8080* const c) {
+  syncSignal(STACK_READ);
   uint16_t val = i8080_rw(c, c->sp);
   c->sp += 2;
   return val;
@@ -544,7 +546,7 @@ static inline void i8080_execute(i8080* const c, uint8_t opcode) {
     c->interrupt_delay = 1;
     break; // EI
   case 0x00: break; // NOP
-  case 0x76: c->halted = 1; break; // HLT
+  case 0x76: syncSignal(HALT_ACKNOWLEDGE); c->halted = 1; break; // HLT
 
   case 0x3C: c->a = i8080_inr(c, c->a); break; // INR A
   case 0x04: c->b = i8080_inr(c, c->b); break; // INR B

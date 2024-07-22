@@ -4,6 +4,25 @@
  extern "C" {
 #endif
 
+#define A8_A15_PORT       PORTA
+#define A8_A15_DIRECTION  DDRA
+#define A0_A7_PORT        PORTC
+#define A0_A7_DIRECTION   DDRC
+#define D0_D7_PORT        PORTF
+#define D0_D7_DIRECTION   DDRF
+
+#define EXT_INT_MASK      EIMSK
+#define CLOCK1PINBIT      INT4
+#define CLOCK2PINBIT      INT5
+
+#define CONTROL_PORT      PORTK
+#define SYNCPINBIT        PORTK0
+#define DBINPINBIT        PORTK1
+#define WAITPINBIT        PORTK2
+#define WRPINBIT          PORTK3
+#define HLDAPINBIT        PORTK4
+#define INTEPINBIT        PORTK5
+
                                         // 8080
                                         // PIN                                     S-100 Pin     Arduino
                                         //  1  A10     Address Bus                 A10           
@@ -18,15 +37,15 @@
                                         // 10  D0      Bi-Directional Data Bus                   PF0
                                         // 11  -5V     Power Supply                              
 const uint8_t resetPin = 53;            // 12  RESET   Timing and Control                        
-const uint8_t holdPin = 0;            // 13  HOLD    Timing and Control          ~PHOLD        
-const uint8_t intPin = 0;             // 14  INT     Timing and Control          ~PINT         
+const uint8_t holdPin = 69;             // 13  HOLD    Timing and Control          ~PHOLD        
+const uint8_t intPin = 68;              // 14  INT     Timing and Control          ~PINT         
 const uint8_t clock2Pin = 3;            // 15  O2      Timing and Control                        PE5
-const uint8_t intePin = 0;            // 16  INTE    Timing and Control          PINTE         
-const uint8_t dbinPin = 65;             // 17  DBIN    Timing and Control          PDBIN         
-const uint8_t wrPin = 66;               // 18  ~WR     Timing and Control          ~PWR          
+const uint8_t intePin = 67;             // 16  INTE    Timing and Control          PINTE         
+const uint8_t dbinPin = 63;             // 17  DBIN    Timing and Control          PDBIN         
+const uint8_t wrPin = 65;               // 18  ~WR     Timing and Control          ~PWR          
 const uint8_t syncPin = 62;             // 19  SYNC    Timing and Control          ~PSYNC        
                                         // 20  +5V     Power Supply                              
-const uint8_t hldaPin = 0;            // 21  HLDA    Timing and Control          PHLDA         
+const uint8_t hldaPin = 66;             // 21  HLDA    Timing and Control          PHLDA         
 const uint8_t clock1Pin = 2;            // 22  O1      Timing and Control                        PE4
 const uint8_t readyPin = 63;            // 23  READY   Timing and Control                        
 const uint8_t waitPin = 64;             // 24  WAIT    Timing and Control          PWAIT         
@@ -48,17 +67,19 @@ const uint8_t waitPin = 64;             // 24  WAIT    Timing and Control       
                                         // 40  A11     Address Bus                 A11           
 
 typedef enum {
-  INST_FETCH          = 0b10100010, // 0xA2  dbin
-  MEMORY_READ         = 0b10000010, // 0x82  dbin
+  INST_FETCH          = 0b10100010, // 0xA2
+  MEMORY_READ         = 0b10000010, // 0x82
   MEMORY_WRITE        = 0b00000000, // 0x00
-  STACK_READ          = 0b10000110, // 0x86  dbin
+  STACK_READ          = 0b10000110, // 0x86
   STACK_WRITE         = 0b00000100, // 0x04
   INPUT_READ          = 0b01000010, // 0x42
   OUTPUT_WRITE        = 0b00010011, // 0x13
-  INTE_AKCKNOWLEDGE   = 0b00100011, // 0x23
-  HALT_ACKNOWLEDGE    = 0b10001010, // 0x8A  dbin
-  INTE_ACK_WHILE_HALT = 0b00101011, // 0x2B  dbin
+  INT_AKCKNOWLEDGE    = 0b00100011, // 0x23
+  HALT_ACKNOWLEDGE    = 0b10001010, // 0x8A
+  INTE_ACK_WHILE_HALT = 0b00101011, // 0x2B 
 } StatusWord;
+
+void syncSignal(uint8_t status);
 
 #ifdef __cplusplus
 }

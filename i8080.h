@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include "cpu.h"
 
 typedef struct i8080 {
   // memory + io interface
